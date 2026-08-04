@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangalore Home Price Prediction</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --secondary: #4a45b1;
+            --accent: #ff6584;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .form:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .area {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .area:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+        
+        .switch-field {
+            display: flex;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .switch-field input {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            width: 1px;
+            border: 0;
+            overflow: hidden;
+        }
+        
+        .switch-field label {
+            background-color: #e9ecef;
+            color: var(--dark);
+            font-size: 1rem;
+            line-height: 1;
+            text-align: center;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 60px;
+        }
+        
+        .switch-field label:hover {
+            background-color: #dee2e6;
+        }
+        
+        .switch-field input:checked + label {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+        }
+        
+        .location {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .location:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+        
+        .submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .submit:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(108, 99, 255, 0.3);
+        }
+        
+        .submit:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+        
+        .price-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .switch-field label {
+                padding: 0.6rem 0.8rem;
+                min-width: 50px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="animate__animated animate__fadeInDown">
+        <h1>Bangalore Home Price Predictor</h1>
+    </header>
+    <main>
+        <div class="container">
+            <form class="form animate__animated animate__fadeInUp">
+                <h2>Area (Square Feet)</h2>
+                <input class="area" type="number" id="uiSqft" name="Squareft" value="1000" min="300" max="10000" required>
+                
+                <h2>BHK</h2>
+                <div class="switch-field">
+                    <input type="radio" id="radio-bhk-1" name="uiBHK" value="1" checked/>
+                    <label for="radio-bhk-1">1</label>
+                    <input type="radio" id="radio-bhk-2" name="uiBHK" value="2"/>
+                    <label for="radio-bhk-2">2</label>
+                    <input type="radio" id="radio-bhk-3" name="uiBHK" value="3"/>
+                    <label for="radio-bhk-3">3</label>
+                    <input type="radio" id="radio-bhk-4" name="uiBHK" value="4"/>
+                    <label for="radio-bhk-4">4</label>
+                    <input type="radio" id="radio-bhk-5" name="uiBHK" value="5"/>
+                    <label for="radio-bhk-5">5</label>
+                </div>
+                
+                <h2>Bathrooms</h2>
+                <div class="switch-field">
+                    <input type="radio" id="radio-bath-1" name="uiBathrooms" value="1" checked/>
+                    <label for="radio-bath-1">1</label>
+                    <input type="radio" id="radio-bath-2" name="uiBathrooms" value="2"/>
+                    <label for="radio-bath-2">2</label>
+                    <input type="radio" id="radio-bath-3" name="uiBathrooms" value="3"/>
+                    <label for="radio-bath-3">3</label>
+                    <input type="radio" id="radio-bath-4" name="uiBathrooms" value="4"/>
+                    <label for="radio-bath-4">4</label>
+                    <input type="radio" id="radio-bath-5" name="uiBathrooms" value="5"/>
+                    <label for="radio-bath-5">5</label>
+                </div>
+                
+                <h2>Location</h2>
+                <select class="location" name="" id="uilocations">
+                    <option value="" disabled selected>Choose a location</option>
+                    <!-- Options will be loaded dynamically -->
+                </select>
+                
+                <button class="submit" onclick="onClickedEstimatePrice()" type="button">
+                    <span id="button-text">Estimate Price</span>
+                    <span id="button-loader" class="loading" style="display: none;"></span>
+                </button>
+                
+                <div id="uiEstimatedPrice" class="result">
+                    Your estimated price will appear here
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <footer class="animate__animated animate__fadeIn">
+        <p>Find your dream home in Bangalore with accurate price predictions</p>
+    </footer>
+    
+    <script>
+        function getSelectedBathValue() {
+            var uiBathrooms = document.getElementsByName("uiBathrooms");
+            for(var i = 0; i < uiBathrooms.length; i++) {
+                if(uiBathrooms[i].checked) {
+                    return parseInt(uiBathrooms[i].value);
+                }
+            }
+            return -1;
+        }
+
+        function getBHKValue() {
+            var uiBHK = document.getElementsByName('uiBHK');
+            for(var i = 0; i < uiBHK.length; i++) {
+                if(uiBHK[i].checked) {
+                    return parseInt(uiBHK[i].value);
+                }
+            }
+            return -1;
+        }
+
+        function onClickedEstimatePrice() {
+            console.log("Estimate price button clicked");
+            
+            var sqft = document.getElementById("uiSqft");
+            var bhk = getBHKValue();
+            var bathrooms = getSelectedBathValue();
+            var location = document.getElementById("uilocations");
+            var estPrice = document.getElementById("uiEstimatedPrice");
+            
+            // Show loading state
+            document.getElementById("button-text").style.display = "none";
+            document.getElementById("button-loader").style.display = "inline-block";
+            estPrice.innerHTML = "Calculating...";
+            estPrice.classList.add("price-animation");
+            
+            var url = "http://127.0.0.1:5000/predict_home_price";
+            
+            $.post(url, {
+                total_sqft: parseFloat(sqft.value),
+                bhk: bhk,
+                bath: bathrooms,
+                location: location.value
+            }, function(data, status) {
+                console.log(data.estimated_price);
+                
+                // Format the price with commas
+                var formattedPrice = parseFloat(data.estimated_price).toLocaleString('en-IN');
+                
+                // Show result with animation
+                estPrice.innerHTML = `<h2>₹${formattedPrice} Lakh</h2>`;
+                estPrice.style.backgroundColor = "#e8f5e9";
+                estPrice.style.color = "#2e7d32";
+                
+                // Reset button state
+                document.getElementById("button-text").style.display = "inline-block";
+                document.getElementById("button-loader").style.display = "none";
+                
+                console.log(status);
+            }).fail(function() {
+                estPrice.innerHTML = "Error calculating price. Please try again.";
+                estPrice.style.backgroundColor = "#ffebee";
+                estPrice.style.color = "#c62828";
+                
+                // Reset button state
+                document.getElementById("button-text").style.display = "inline-block";
+                document.getElementById("button-loader").style.display = "none";
+            });
+        }
+
+        function onPageLoad() {
+            console.log("document loaded");
+            var url = "http://127.0.0.1:5000/get_location_names";
+            $.get(url, function(data, status) {
+                console.log("got response for get_location_names request");
+                if (data) {
+                    var locations = data.locations;
+                    var uiLocations = document.getElementById("uilocations");
+                    $('#uilocations').empty();
+                    $('#uilocations').append('<option value="" disabled selected>Choose a location</option>');
+                    for (var i in locations) {
+                        var opt = new Option(locations[i]);
+                        $('#uilocations').append(opt);
+                    }
+                }
+            });
+        }
+
+        window.onload = onPageLoad;
+    </script>
+</body>
+</html>
